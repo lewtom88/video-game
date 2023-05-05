@@ -20,14 +20,28 @@
         }
     </style>
     <script>
+      function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+      }
+      function randomGauge(t) {
+        let v = document.gauges.get(t).value;
+        v = v == 60 ? 0 : v;
+        let r = getRandomInt(v, 61);
+        document.gauges.get(t).update({'value': r});
+      }
+
+      const params = new URLSearchParams(document.location.search);
+      const demo = params.get("demo");
       $(document).on('click', function () {
         let cs = $('.container').css('display');
         if (cs == 'none') {
           $('.container').css('display', 'block');
-          $.get('http://localhost:8080/video_turn_on')
+          if (!demo) $.get('http://localhost:8080/video_turn_on')
         } else {
           $('.container').css('display', 'none');
-          $.get('http://localhost:8080/video_turn_off')
+          if (!demo) $.get('http://localhost:8080/video_turn_off')
         }
       })
 
@@ -35,12 +49,19 @@
         if ($('.container').css('display') == 'none') {
           return;
         }
-        $.get('http://localhost:8080/get_video_comments', function(r) {
-          document.gauges.get('like').update({'value': r.data['赞']});
-          document.gauges.get('forward').update({'value': r.data['进']});
-          document.gauges.get('backward').update({'value': r.data['退']});
-        })
-      }, 500)
+        if (!demo){
+          $.get('http://localhost:8080/get_video_comments', function(r) {
+            document.gauges.get('like').update({'value': r.data['赞']});
+            document.gauges.get('forward').update({'value': r.data['进']});
+            document.gauges.get('backward').update({'value': r.data['退']});
+          })
+        } else {
+          document.gauges.get('like').update({'value': Math.floor(Math.random() * 61)});
+          document.gauges.get('forward').update({'value': Math.floor(Math.random() * 61)});
+          document.gauges.get('backward').update({'value': Math.floor(Math.random() * 61)});
+        }
+
+      }, demo ? 1500 : 700)
     </script>
 </head>
 
