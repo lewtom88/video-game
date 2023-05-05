@@ -20,18 +20,6 @@
         }
     </style>
     <script>
-      function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min) + min);
-      }
-      function randomGauge(t) {
-        let v = document.gauges.get(t).value;
-        v = v == 60 ? 0 : v;
-        let r = getRandomInt(v, 61);
-        document.gauges.get(t).update({'value': r});
-      }
-
       const params = new URLSearchParams(document.location.search);
       const demo = params.get("demo");
       $(document).on('click', function () {
